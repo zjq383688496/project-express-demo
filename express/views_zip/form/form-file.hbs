@@ -1,0 +1,26 @@
+{{> globel/header-full}}
+
+<form class="form-horizontal" enctype="multipart/form-data" action="/form-file/file/{{year}}/{{month}}" method="POST">
+	<fieldset>
+		<div id="legend" class="">
+			<legend class="">文件上传</legend>
+		</div>
+		<div class="control-group">
+			<label class="control-label">File Button</label>
+
+			<!-- File Upload -->
+			<div class="controls">
+				<input class="input-file" id="fileInput" type="file" required accept="image/*" name="file">
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label">Button</label>
+
+			<!-- Button -->
+			<div class="controls">
+				<input class="btn btn-success" type="submit" value="上传">
+			</div>
+		</div>
+	</fieldset>
+</form>

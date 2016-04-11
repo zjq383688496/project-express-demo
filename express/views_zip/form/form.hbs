@@ -1,0 +1,80 @@
+{{> globel/header-full}}
+
+<form class="form-horizontal form-post" action="/form/submitPOST.do" method="POST">
+	<hr>
+	<h3>POST 请求</h3>
+	<hr>
+	<div class="control-group">
+		<!-- Text input-->
+		<label class="control-label" for="input01">User Name</label>
+		<div class="controls">
+			<input id="input01" type="text" placeholder="placeholder" class="input-xlarge" name="username">
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">Sex</label>
+		<div class="controls">
+
+			<!-- Inline Radios -->
+			<label class="radio inline">
+				<input type="radio" value="1" checked="checked" name="sex">
+				Male
+			</label>
+			<label class="radio inline">
+				<input type="radio" value="2" name="sex">
+				Female
+			</label>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">Button</label>
+
+		<!-- Button -->
+		<div class="controls">
+			<input class="btn btn-success" type="submit" value="Button">
+		</div>
+	</div>
+</form>
+
+<form class="form-horizontal form-get" action="/form/submitGET.do" method="GET">
+	<hr>
+	<h3>GET 请求</h3>
+	<hr>
+	<div class="control-group">
+		<!-- Text input-->
+		<label class="control-label" for="input02">User Name</label>
+		<div class="controls">
+			<input id="input02" type="text" placeholder="placeholder" class="input-xlarge" name="username">
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">Sex</label>
+		<div class="controls">
+			<!-- Inline Radios -->
+			<label class="radio inline">
+				<input type="radio" value="1" checked="checked" name="sex">
+				Male
+			</label>
+			<label class="radio inline">
+				<input type="radio" value="2" name="sex">
+				Female
+			</label>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">Button</label>
+		<!-- Button -->
+		<div class="controls">
+			<input class="btn btn-success" type="submit" value="Button">
+		</div>
+	</div>
+</form>
+
+{{#section 'jquery'}}
+<script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script>
+$(function(){
+	console.log('页面加载完成!');
+});
+</script>
+{{/section}}

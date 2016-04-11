@@ -39,7 +39,11 @@
     "jshint": "^2.9.1",
     "jshint-stylish": "^2.1.0",
     "gulp": "^3.9.1",
-    "gulp-livereload": "^3.8.1"
+    "gulp-livereload": "^3.8.1",
+    "body-parser": "^1.15.0",
+    "gulp-sass": "^2.2.0",
+    "formidable": "^1.0.17",
+    "jquery-file-upload-middleware": "^0.1.7"
   },
   "devDependencies": {
     "chai": "^3.5.0",

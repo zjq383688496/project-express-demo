@@ -1,0 +1,27 @@
+{{> globel/header-full}}
+
+<div class="controls">
+	Upload
+	<input type="file" class="input-file" required accept="image/*" id="fileInput" data-url="/upload" multiple name="photo">
+</div>
+<div id="uploads"></div>
+
+{{#section 'jquery'}}
+<script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/vendor/jquery.ui.widget.js"></script>
+<script src="/vendor/jquery.iframe-transport.js"></script>
+<script src="/vendor/jquery.fileupload.js"></script>
+<script>
+$(document).ready(function(){
+	$('#fileInput').fileupload({
+		dataType: 'json',
+		done: function(e, data){
+			console.log(data.result.files);
+			$.each(data.result.files, function(index, file) {
+				$('#uploads').append($('<div class="upload"><img src="'+file.url+'"><p>'+file.name+'</p><p>'+file.size+'</p></div>'));
+			});
+		}
+	});
+});
+</script>
+{{/section}}

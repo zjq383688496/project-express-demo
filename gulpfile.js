@@ -7,6 +7,7 @@ var gulp = require('gulp');
 /* html */
 var minifyHTML = require('gulp-minify-html');	// html压缩
 /* css */
+var sass    = require('gulp-sass');				// sass编译
 var less    = require('gulp-less');				// less编译
 var cssmin  = require('gulp-minify-css');		// css压缩
 var csslint = require('gulp-csslint');			// css检测
@@ -37,14 +38,30 @@ var config     = new gulpConfig('beta');
 var flag       = config.flag;
 /* server */
 var nodemon    = require('gulp-nodemon');		// 自动启动express服务
-var livereload = require('gulp-livereload');	// 自动刷新
 
 /*
 /* 工作流
  */
 
-/* 1. 清除文件 */
+/* 0. 替换gulp相关文件 */
+gulp.task('gulp-rev', function () {
+	gulp.src('gulp/gulp-rev-index.js').pipe(rename('index.js')).pipe(gulp.dest('node_modules/gulp-rev'));
+});
+gulp.task('gulp-rev-rev-path', function () {
+	gulp.src('gulp/gulp-rev-rev-path-index.js').pipe(rename('index.js')).pipe(gulp.dest('node_modules/gulp-rev/node_modules/rev-path'));
+});
+gulp.task('gulp-rev-collector', function () {
+	gulp.src('gulp/gulp-rev-collector-index.js').pipe(rename('index.js')).pipe(gulp.dest('node_modules/gulp-rev-collector'));
+});
+gulp.task('middleware-lib-fileinfo', function () {
+	gulp.src('gulp/middleware-lib-fileinfo.js').pipe(rename('fileinfo.js')).pipe(gulp.dest('node_modules/jquery-file-upload-middleware/lib'));
+});
+gulp.task('middleware-lib-uploadhandler', function () {
+	gulp.src('gulp/middleware-lib-uploadhandler.js').pipe(rename('uploadhandler.js')).pipe(gulp.dest('node_modules/jquery-file-upload-middleware/lib'));
+});
 
+
+/* 1. 清除文件 */
 gulp.task('clean', function () {
 	return gulp.src(config.cleanSrc)
 	.pipe(clean());
@@ -52,6 +69,15 @@ gulp.task('clean', function () {
 
 
 /* 2. 编译 (beta环境会生成map) */
+// 编译 sass
+gulp.task('sass', function () {
+	return gulp.src(config.sassSrc)
+		.pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')}))
+		.pipe(gulpif(!flag, sourcemaps.init({loadMaps: true})))
+		.pipe(sass().on('error', sass.logError))
+		.pipe(gulpif(!flag, sourcemaps.write('/')))
+		.pipe(gulp.dest(config.cssDest));
+});
 // 编译 less
 gulp.task('less', function () {
 	return gulp.src(config.lessSrc)
@@ -59,8 +85,7 @@ gulp.task('less', function () {
 		.pipe(gulpif(!flag, sourcemaps.init({loadMaps: true})))
 		.pipe(less())
 		.pipe(gulpif(!flag, sourcemaps.write('/')))
-		.pipe(gulp.dest(config.cssDest))
-		//.pipe(gulpif(!flag, livereload()));
+		.pipe(gulp.dest(config.cssDest));
 });
 // 编译 ES2015(ES6)
 gulp.task('ES2015', function () {
@@ -69,8 +94,7 @@ gulp.task('ES2015', function () {
 		.pipe(gulpif(!flag, sourcemaps.init({loadMaps: true})))
 		.pipe(babel({ presets: ['es2015'] }))
 		.pipe(gulpif(!flag, sourcemaps.write('/')))
-		.pipe(gulp.dest(config.jsDest))
-		//.pipe(gulpif(!flag, livereload()));
+		.pipe(gulp.dest(config.jsDest));
 });
 // 编译 coffee-script
 gulp.task('coffee', function () {
@@ -89,8 +113,6 @@ gulp.task('coffee', function () {
 gulp.task('csslint', function() {
 	return gulp.src(config.cssSrc)
 		.pipe(csslint());
-		//.pipe(csslint.reporter())
-		//.pipe(csslint.failReporter());
 });
 // jsS 检测
 gulp.task('jslint', function() {
@@ -120,19 +142,15 @@ gulp.task('uglify', function () {
 		.pipe(rev())
 		.pipe(gulp.dest(config.defPath))
 		.pipe(rev.manifest())
-		.pipe(gulp.dest(config.revJsDesc))
-		//.pipe(gulpif(!flag, livereload()));
+		.pipe(gulp.dest(config.revJsDesc));
 });
 // images 压缩
 gulp.task('imagemin', function () {
 	return gulp.src(config.oldImgSrc)
-		//.pipe(gulp.dest(config.imgDest))
-		//.pipe(gulpif(flag, imagemin()))
 		.pipe(rev())
 		.pipe(gulp.dest(config.imgDest))
 		.pipe(rev.manifest())
-		.pipe(gulp.dest(config.revImgDesc))
-		//.pipe(gulpif(!flag, livereload()));
+		.pipe(gulp.dest(config.revImgDesc));
 });
 
 
@@ -158,13 +176,11 @@ gulp.task('revHbs', function () {
 				spare: true
 			}))
 			.pipe(rename({ extname: '.hbs' }))
-			.pipe(gulp.dest(config.viewDesc))
-			//.pipe(gulpif(!flag, livereload()));
+			.pipe(gulp.dest(config.viewDesc));
 	} else {
 		return gulp.src(config.revHbsSrc)
 			.pipe(revCollector())
-			.pipe(gulp.dest(config.viewDesc))
-			//.pipe(gulpif(!flag, livereload()));
+			.pipe(gulp.dest(config.viewDesc));
 	}
 });
 
@@ -178,7 +194,8 @@ gulp.task('cleanRev', function () {
 
 /* 7. server */
 gulp.task('serve', function () {
-	nodemon({ script: 'md_cluster.js' });
+	var file = flag? 'md_cluster.js': 'md_beta.js';
+	nodemon({ script: file });
 });
 
 /* 8. 监听 */
@@ -212,26 +229,27 @@ gulp.task('prd', function () {
 	config = new gulpConfig('prd');
 	flag   = config.flag;
 	return runSequence(
-		'clean',
+		['gulp-rev', 'gulp-rev-rev-path', 'gulp-rev-collector', 'middleware-lib-fileinfo', 'middleware-lib-uploadhandler'],
+		['clean'],
 		['less', 'ES2015', 'coffee'],
 		['csslint', 'jslint'],
 		['cssmin', 'uglify', 'imagemin'],
 		['revCss', 'revJs'],
 		'revHbs',
-		'cleanRev',
+		//'cleanRev',
 		'serve'
 	)();
 });
 /* 默认开发(测试)环境 */
 gulp.task('default', function () {
 	return runSequence(
-		'clean',
-		['less', 'ES2015', 'coffee'],
+		['gulp-rev', 'gulp-rev-rev-path', 'gulp-rev-collector', 'middleware-lib-fileinfo', 'middleware-lib-uploadhandler'],
+		['clean'],
+		['sass', 'less', 'ES2015', 'coffee'],
 		['csslint', 'jslint'],
 		['cssmin', 'uglify', 'imagemin'],
 		['revCss', 'revJs'],
 		'revHbs',
-		'cleanRev',
 		'serve'
 	)();
 });

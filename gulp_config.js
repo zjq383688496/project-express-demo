@@ -23,6 +23,7 @@ var gulpConfig = function (envPath) {
 	var globalSrc = 'public';
 	var viewSrc   = 'express';
 	var lessSrc   = globalSrc + '/less';
+	var sassSrc   = globalSrc + '/sass';
 	var ES6Src    = globalSrc + '/es6';
 	var imgSrc    = globalSrc + '/img';
 	var coffeeSrc = globalSrc + '/coffee';
@@ -33,6 +34,7 @@ var gulpConfig = function (envPath) {
 		cleanSrc: [dir, viewSrc+'/views_zip'],
 		/* 读取目录 */
 		lessSrc:   [lessSrc+'/*.less', lessSrc+'/**/*.less', '!'+lessSrc+'/global.less', '!'+lessSrc+'/{mixins,other,style}/*.less', '!'+lessSrc+'/{mixins,other,style}/**/*.less'],
+		sassSrc:   [sassSrc+'/*.scss', sassSrc+'/**/*.scss', '!'+sassSrc+'/global.scss', '!'+sassSrc+'/{mixins,other,style}/*.scss', '!'+lessSrc+'/{mixins,other,style}/**/*.less'],
 		cssSrc:    [globalEnv.path+'/**/*.css', '!'+globalEnv.path +'/**/*.min.css'],
 		ES6Src:    [ES6Src+'/*.js', ES6Src+'/**/*.js'],
 		coffeeSrc: [coffeeSrc+'/*.coffee', coffeeSrc+'/**/*.coffee'],
@@ -57,6 +59,7 @@ var gulpConfig = function (envPath) {
 		/* views目录 */
 		viewSrc:  [viewSrc+'/views/*.hbs', viewSrc+'/views/**/*.hbs'],
 		viewDesc: viewSrc+'/views_zip',
+		/* 打包目录 */
 		zipSrc:   this.defSrc,
 		zipName:  'maidou.zip'	// 压缩包名称
 	}

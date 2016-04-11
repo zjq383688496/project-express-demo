@@ -1,0 +1,9 @@
+{{> globel/header-full}}
+
+
+<div class="alert alert-success">
+	<strong>Success!</strong>You have successfully done it.
+	{{#if userform.username}}<p>USER: {{userform.username}}</p>{{/if}}
+	{{#if userform.sex}}<p>SEX: {{userform.sex}}</p>{{/if}}
+	{{#if userform.method}}<p>method: {{userform.method}}</p>{{/if}}
+</div>
