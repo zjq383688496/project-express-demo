@@ -8,7 +8,6 @@ var MDJS = require('../lib/MDJS').MDJS;
 
 /* GET form. */
 router.get('/', function(req, res, next) {
-	console.log(config);
 	res.render('form/form', config);
 })
 .post('/submitPOST.do', function(req, res, next) {

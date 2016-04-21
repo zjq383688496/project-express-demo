@@ -224,6 +224,11 @@ gulp.task('watch', function() {
 // 5. img/css/js 版本号处理
 // 6. 启动服务
 
+/* 中间件测试 */
+gulp.task('mid', function () {
+	nodemon({ script: 'middleware.js' });
+});
+
 /* 生产环境 */
 gulp.task('prd', function () {
 	config = new gulpConfig('prd');

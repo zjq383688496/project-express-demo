@@ -1,4 +1,7 @@
+'use strict';
+
 var http = require('http');
+var cookieSecret = (new Buffer('maidou.com')).toString('base64');
 
 var Fn = {
 	/*
@@ -38,9 +41,9 @@ var Fn = {
 		}
 	},
 	/*
-	/*  错误处理
+	/*  信息处理
 	 */
-	error: {
+	message: {
 		// 404 catch-all 处理器（中间件）
 		'404': function (res) {
 			res.status(404).render('404');
@@ -49,7 +52,23 @@ var Fn = {
 		'500': function (res) {
 			res.status(500).render('500');
 		}
-	}
+	},
+	/*
+	/*  cookie
+	 */
+	cookie: {
+		// cookie 秘钥放在这里
+		secret: cookieSecret
+	},
+	/*
+	/*  email
+	 */
+	email: {
+		gmail: {
+			user: 'zjq383688496work@gmail.com',
+			password: 'jimmy001',
+		}
+	},
+	mapKey: 'AIzaSyBpv83qoZJrtW32r-e-E2ZkXwcYGOZUzrI'
 };
-
 exports.MDJS = Fn;
